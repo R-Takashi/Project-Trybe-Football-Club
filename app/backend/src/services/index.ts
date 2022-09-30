@@ -1,3 +1,7 @@
 import LoginService from './login.service';
+import TeamService from './team.service';
 
-export default LoginService;
+export {
+  LoginService,
+  TeamService,
+};

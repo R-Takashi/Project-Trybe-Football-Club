@@ -7,7 +7,11 @@ export default class Team extends Model {
 }
 
 Team.init({
-  id: INTEGER,
+  id: {
+    type: INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   teamName: STRING,
 }, {
   underscored: true,
