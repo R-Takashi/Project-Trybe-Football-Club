@@ -10,12 +10,16 @@ export default class LoginController {
 
     const { status, response } = await this._loginService.login(email, password);
 
-    if (status !== 200) {
-      return res.status(status).json({ message: response });
-    }
-
     const token = response as IToken;
 
     return res.status(status).json({ token });
+  }
+
+  public async validate(req: Request, res: Response): Promise<Response> {
+    const { authorization } = req.headers as IToken;
+
+    const { status, response } = await this._loginService.validate(authorization);
+
+    return res.status(status).json(response);
   }
 }
