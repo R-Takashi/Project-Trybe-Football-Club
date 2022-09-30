@@ -3,6 +3,7 @@ import IResponseService from './IResponseService';
 import IToken from './IToken';
 import ITokenDecoded from './ITokenDecoded';
 import ITeamService from './ITeamService';
+import IMatchService from './IMatchService';
 
 export {
   ILoginService,
@@ -10,4 +11,5 @@ export {
   IToken,
   ITokenDecoded,
   ITeamService,
+  IMatchService,
 };

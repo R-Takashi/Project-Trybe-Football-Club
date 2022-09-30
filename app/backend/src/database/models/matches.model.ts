@@ -12,7 +12,12 @@ export default class Match extends Model {
 }
 
 Match.init({
-  id: INTEGER,
+  id: {
+    type: INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+
+  },
   homeTeam: INTEGER,
   homeTeamGoals: INTEGER,
   awayTeam: INTEGER,
@@ -26,8 +31,8 @@ Match.init({
   timestamps: false,
 });
 
-Match.belongsTo(Team, { foreignKey: 'home_team', as: 'homeTeam' });
-Match.belongsTo(Team, { foreignKey: 'away_team', as: 'awayTeam' });
+Match.belongsTo(Team, { foreignKey: 'home_team', as: 'teamHome' });
+Match.belongsTo(Team, { foreignKey: 'away_team', as: 'teamAway' });
 
-Team.hasMany(Match, { foreignKey: 'home_team', as: 'homeTeamMatch' });
-Team.hasMany(Match, { foreignKey: 'away_team', as: 'awayTeamMatch' });
+Team.hasMany(Match, { foreignKey: 'home_team', as: 'homeTeam' });
+Team.hasMany(Match, { foreignKey: 'away_team', as: 'awayTeam' });
