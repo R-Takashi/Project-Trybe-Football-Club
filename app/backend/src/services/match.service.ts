@@ -1,4 +1,4 @@
-import { IMatchService, IResponseService } from '../interfaces';
+import { IMatchService, INewMatch, IResponseService } from '../interfaces';
 import Match from '../database/models/matches.model';
 import Team from '../database/models/teams.model';
 
@@ -36,5 +36,11 @@ export default class MatchService implements IMatchService {
     });
 
     return { status: 200, response: matches } as IResponseService;
+  };
+
+  public create = async (newMatch: INewMatch): Promise<IResponseService> => {
+    const match = await this.matchModel.create(newMatch);
+
+    return { status: 201, response: match } as IResponseService;
   };
 }
