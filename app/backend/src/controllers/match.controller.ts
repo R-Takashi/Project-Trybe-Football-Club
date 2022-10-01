@@ -25,4 +25,11 @@ export default class MatchController {
 
     return res.status(status).json(response);
   }
+
+  public async update(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const { status, response } = await this._matchService.update(id);
+
+    return res.status(status).json({ message: response });
+  }
 }
