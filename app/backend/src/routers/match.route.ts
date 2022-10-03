@@ -13,4 +13,6 @@ matchRouter.post('/', validToken, validMatch, (req, res) => matchController.crea
 
 matchRouter.patch('/:id/finish', validToken, (req, res) => matchController.update(req, res));
 
+matchRouter.patch('/:id', validToken, (req, res) => matchController.updateScore(req, res));
+
 export default matchRouter;

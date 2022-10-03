@@ -32,4 +32,12 @@ export default class MatchController {
 
     return res.status(status).json({ message: response });
   }
+
+  public async updateScore(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const scoreboard = req.body;
+    const { status, response } = await this._matchService.updateScore(id, scoreboard);
+
+    return res.status(status).json({ message: response });
+  }
 }

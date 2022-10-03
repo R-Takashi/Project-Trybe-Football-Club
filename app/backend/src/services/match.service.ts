@@ -58,4 +58,20 @@ export default class MatchService implements IMatchService {
 
     return { status: 200, response: 'Finished' } as IResponseService;
   };
+
+  public updateScore = async (
+    id: string,
+    scoreboard: { homeTeam: number; awayTeam: number },
+  ): Promise<IResponseService> => {
+    const match = await this.matchModel.update(
+      { ...scoreboard },
+      { where: { id, inProgress: true } },
+    );
+
+    if (!match) {
+      throw new HttpException(404, 'Match not found');
+    }
+
+    return { status: 200, response: 'Scoreboard updated' } as IResponseService;
+  };
 }
