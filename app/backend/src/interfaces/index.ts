@@ -6,6 +6,7 @@ import ITeamService from './ITeamService';
 import IMatchService from './IMatchService';
 import INewMatch from './INewMatch';
 import IScoreboard from './IScoreboard';
+import ITeam from './ITeam';
 
 export {
   ILoginService,
@@ -16,4 +17,5 @@ export {
   IMatchService,
   INewMatch,
   IScoreboard,
+  ITeam,
 };

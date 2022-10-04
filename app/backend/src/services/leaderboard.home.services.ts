@@ -2,32 +2,15 @@ import { Op } from 'sequelize';
 import sequelize = require('sequelize');
 import Match from '../database/models/matches.model';
 import Team from '../database/models/teams.model';
-import { IResponseService, IScoreboard } from '../interfaces';
+import { IResponseService, ITeam } from '../interfaces';
+import LeaderboardService from './leaderboard';
 
-const orderScoreboard = (scoreboard: IScoreboard[]): IScoreboard[] => {
-  const sortedScoreboard = scoreboard.sort((a, b) => {
-    if (a.totalPoints > b.totalPoints) return -1;
-    if (a.totalPoints < b.totalPoints) return 1;
-    if (a.totalVictories > b.totalVictories) return -1;
-    if (a.totalVictories < b.totalVictories) return 1;
-    if (a.goalsBalance > b.goalsBalance) return -1;
-    if (a.goalsBalance < b.goalsBalance) return 1;
-    if (a.goalsFavor > b.goalsFavor) return -1;
-    if (a.goalsFavor < b.goalsFavor) return 1;
-    if (a.goalsOwn < b.goalsOwn) return -1;
-    if (a.goalsOwn > b.goalsOwn) return 1;
-    return 0;
-  });
-
-  return sortedScoreboard;
-};
-
-export default class LeaderboardService {
+export default class LeaderboardHomeService extends LeaderboardService {
   public matchModel = Match;
   public teamModel = Team;
 
-  public async getHomeLeaderboard(): Promise<IResponseService> {
-    const teamsHome = await this.getTeamsHome() as unknown as Team[];
+  public async getLeaderboard(): Promise<IResponseService> {
+    const teamsHome = await this.getTeams();
 
     const scoreboard = await Promise.all(teamsHome.map(async ({ id, teamName }) => ({
       name: teamName,
@@ -42,12 +25,10 @@ export default class LeaderboardService {
       efficiency: await this.getEfficiency(id),
     })));
 
-    const sortedScoreboard = orderScoreboard(scoreboard);
-
-    return { status: 200, response: sortedScoreboard };
+    return { status: 200, response: this.orderScoreboard(scoreboard) };
   }
 
-  public async getTeamsHome(): Promise<unknown> {
+  public async getTeams(): Promise<ITeam[]> {
     const teamsHome = await this.teamModel.findAll({
       where: {
         id: {
@@ -121,38 +102,11 @@ export default class LeaderboardService {
     return goalsOwn;
   }
 
-  public async getGoalsBalance(id: number): Promise<number> {
-    const goalsFavor = await this.getGoalsFavor(id);
-    const goalsOwn = await this.getGoalsOwn(id);
-
-    const goalsBalance = goalsFavor - goalsOwn;
-
-    return goalsBalance;
-  }
-
-  public async getTotalPoints(id: number): Promise<number> {
-    const winPoints = await this.getWins(id);
-    const drawPoints = await this.getDraws(id);
-
-    const totalPoints = (winPoints * 3) + drawPoints;
-
-    return totalPoints;
-  }
-
   public async getTotalGames(id: number): Promise<number> {
     const totalGames = await this.matchModel.count({
       where: { homeTeam: id, inProgress: false },
     });
 
     return totalGames;
-  }
-
-  public async getEfficiency(id: number): Promise<number> {
-    const totalPoints = await this.getTotalPoints(id);
-    const totalGames = await this.getTotalGames(id);
-
-    const efficiency = (totalPoints / (totalGames * 3)) * 100;
-
-    return +efficiency.toFixed(2);
   }
 }
