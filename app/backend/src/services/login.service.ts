@@ -11,12 +11,11 @@ export default class LoginService implements ILoginService {
   public login = async (email: string, password: string): Promise<IResponseService> => {
     const user = await this.userModel.findOne({ where: { email } }) as User;
 
-    if (!user) {
+    if (user?.email !== email) {
       throw new HttpException(401, 'Incorrect email or password');
     }
 
     const isPasswordValid = await compare(password, user.password);
-    console.log(isPasswordValid);
 
     if (isPasswordValid === false) {
       throw new HttpException(401, 'Incorrect email or password');
@@ -32,9 +31,17 @@ export default class LoginService implements ILoginService {
   public validate = async (authorization: string): Promise<IResponseService> => {
     const token = authorization;
 
-    const { id } = decode(token) as ITokenDecoded;
+    if (!token) {
+      throw new HttpException(401, 'Token not provided');
+    }
 
-    const user = await this.userModel.findOne({ where: { id } }) as User;
+    const tokenDecoded = decode(token) as ITokenDecoded;
+
+    if (!tokenDecoded?.id) {
+      throw new HttpException(401, 'Invalid token');
+    }
+
+    const user = await this.userModel.findOne({ where: { id: tokenDecoded.id } }) as User;
 
     if (!user) {
       throw new HttpException(401, 'Invalid token');
