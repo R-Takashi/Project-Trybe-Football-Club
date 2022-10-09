@@ -43,6 +43,8 @@ export default class LeaderboardHomeService extends LeaderboardService {
       },
     });
 
+    console.log(teamsHome);
+
     return teamsHome;
   }
 
