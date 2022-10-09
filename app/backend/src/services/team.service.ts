@@ -14,7 +14,7 @@ export default class TeamService implements ITeamService {
   public getById = async (id: string): Promise<IResponseService> => {
     const team = await this.teamModel.findOne({ where: { id } });
 
-    if (!team) {
+    if (team?.id !== +id) {
       throw new HttpException(404, 'Team not found');
     }
 

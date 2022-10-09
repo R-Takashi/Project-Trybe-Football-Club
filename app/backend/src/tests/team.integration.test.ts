@@ -59,6 +59,21 @@ describe('Testando rota /teams:id', () => {
     expect(chaiHttpResponse.body).to.have.property('teamName');
     expect(chaiHttpResponse.body.teamName).to.equal('team1');
   });
+});
+
+describe('Testando rota /teams/:id', () => {
+
+  let chaiHttpResponse: Response;
+
+  before(async () => {
+    sinon
+      .stub(Team, "findOne")
+      .resolves();
+  });
+
+  after(()=>{
+    sinon.restore();
+  })
 
   it('GET - Retorna mensagem de erro quando id não existe', async () => {
     chaiHttpResponse = await chai.request(app).get('/teams/4');

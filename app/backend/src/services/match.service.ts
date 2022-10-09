@@ -52,7 +52,7 @@ export default class MatchService implements IMatchService {
       { where: { id } },
     );
 
-    if (!match) {
+    if (match[0] === 0) {
       throw new HttpException(404, 'Match not found');
     }
 
@@ -68,7 +68,7 @@ export default class MatchService implements IMatchService {
       { where: { id, inProgress: true } },
     );
 
-    if (!match) {
+    if (match[0] === 0) {
       throw new HttpException(404, 'Match not found');
     }
 
